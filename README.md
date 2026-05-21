@@ -28,7 +28,7 @@ From this repository during development:
 
 ```bash
 python -m pip install -e .
-npm ci
+npm ci && npm run build
 ```
 
 ## Compatibility
