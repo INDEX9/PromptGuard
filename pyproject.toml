@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prompt-guard"
+version = "0.3.0"
+description = "Small Python/TypeScript library for detecting prompt injection, PII, and text contradictions."
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [{ name = "PromptGuard contributors" }]
+license = { text = "MIT" }
+keywords = ["prompt-injection", "pii", "llm-security", "benchmark"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security",
+  "Topic :: Text Processing :: Linguistic"
+]
+
+[project.urls]
+Homepage = "https://github.com/INDEX9/PromptGuard"
+Repository = "https://github.com/INDEX9/PromptGuard"
+Issues = "https://github.com/INDEX9/PromptGuard/issues"
+Changelog = "https://github.com/INDEX9/PromptGuard/blob/main/CHANGELOG.md"
+
+[project.scripts]
+prompt-guard = "prompt_guard.cli:main"
+prompt-guard-benchmark = "prompt_guard.benchmark:main"
+
+[tool.setuptools.packages.find]
+where = ["src_py"]
+
+[tool.setuptools.package-data]
+prompt_guard = ["py.typed"]
+"prompt_guard.data" = ["cases.json"]

@@ -1,0 +1,59 @@
+{
+  "name": "prompt-guard",
+  "version": "0.3.0",
+  "description": "Small Python/TypeScript library for detecting prompt injection, PII, and text contradictions.",
+  "type": "module",
+  "homepage": "https://github.com/INDEX9/PromptGuard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/INDEX9/PromptGuard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/INDEX9/PromptGuard/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "prompt-guard": "dist/cli.js",
+    "prompt-guard-benchmark": "dist/benchmark.js"
+  },
+  "files": [
+    "dist/",
+    "benchmarks/cases.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && tsc -p tsconfig.test.json && node --test dist-test/index.test.js",
+    "benchmark": "npm run build && node dist/benchmark.js",
+    "prepack": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./benchmark": {
+      "types": "./dist/benchmark.d.ts",
+      "import": "./dist/benchmark.js"
+    }
+  },
+  "keywords": [
+    "prompt-injection",
+    "pii",
+    "llm-security",
+    "benchmark"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "typescript": "^5.4.0"
+  }
+}

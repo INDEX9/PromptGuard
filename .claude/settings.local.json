@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(PYTHONPATH=src_py python3 -m prompt_guard.cli --config /tmp/psconfig.json)",
+      "Bash(echo \"py exit: $?\")",
+      "Bash(node dist/cli.js --config /tmp/psconfig.json)",
+      "Bash(echo \"ts exit: $?\")",
+      "Bash(npm run *)",
+      "Bash(PYTHONPATH=src_py python3 -m unittest discover -s tests -p 'test_*.py')",
+      "Bash(npm test *)",
+      "Bash(PYTHONPATH=src_py python3 -m prompt_guard.benchmark)",
+      "Bash(sed -n '1,18p')",
+      "Bash(npm pack *)",
+      "Bash(node -e \"import\\('./dist/benchmark.js'\\).then\\(m => console.log\\('benchmark subpath exports:', ['runBenchmark','formatBenchmark','loadBenchmarkCases','BENCHMARK_CASES'].filter\\(k => k in m\\).join\\(', '\\)\\)\\)\")",
+      "Bash(PYTHONPATH=src_py python3 -c \"import prompt_guard as p; print\\('py taxonomy:', p.severity_for_score\\(0.8\\), p.category_for_label\\('email','pii'\\), len\\(p.OWASP_LLM_CATEGORIES\\)\\)\")",
+      "Bash(python3 -m build --outdir /tmp/psk-dist)",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}
