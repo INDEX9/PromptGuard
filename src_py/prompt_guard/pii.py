@@ -29,6 +29,32 @@ PII_RULES: Tuple[Rule, ...] = (
     ("phone_cn", re.compile(r"(?<!\d)(?:\+?86[-\s]?)?1[3-9]\d{9}(?!\d)"), 0.45, "cn"),
     ("national_id_cn", re.compile(r"(?<!\d)\d{6}(?:19|20)\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\d{3}[\dXx](?!\d)"), 0.55, "cn"),
     ("iban", re.compile(r"\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b", re.IGNORECASE), 0.5, "eu"),
+    # --- secrets locale: high-confidence vendor credential fingerprints ---
+    ("aws_access_key_id", re.compile(r"\b(?:AKIA|ASIA|AGPA|AIDA|AROA|ANPA|ANVA|AIPA)[0-9A-Z]{16}\b"), 0.9, "secrets"),
+    ("github_token", re.compile(r"\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{30,255}\b"), 0.9, "secrets"),
+    ("openai_api_key", re.compile(r"\bsk-(?:proj-|svcacct-|admin-)?[A-Za-z0-9_-]{20,}\b"), 0.85, "secrets"),
+    ("anthropic_api_key", re.compile(r"\bsk-ant-[A-Za-z0-9_-]{20,}\b"), 0.9, "secrets"),
+    ("slack_token", re.compile(r"\bxox[abprs]-[A-Za-z0-9-]{10,}\b"), 0.85, "secrets"),
+    ("stripe_secret_key", re.compile(r"\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{24,}\b"), 0.9, "secrets"),
+    ("google_api_key", re.compile(r"\bAIza[0-9A-Za-z_-]{35}\b"), 0.85, "secrets"),
+    (
+        "jwt",
+        re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b"),
+        0.7,
+        "secrets",
+    ),
+    (
+        "private_key_pem",
+        re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED |PGP )?PRIVATE KEY-----", re.IGNORECASE),
+        0.95,
+        "secrets",
+    ),
+    (
+        "gcp_service_account",
+        re.compile(r'"type"\s*:\s*"service_account"'),
+        0.85,
+        "secrets",
+    ),
 )
 
 

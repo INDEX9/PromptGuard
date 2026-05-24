@@ -17,6 +17,22 @@ const PII_RULES: Rule[] = [
   ["phone_cn", /(?<!\d)(?:\+?86[-\s]?)?1[3-9]\d{9}(?!\d)/g, 0.45, "cn"],
   ["national_id_cn", /(?<!\d)\d{6}(?:19|20)\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\d{3}[\dXx](?!\d)/g, 0.55, "cn"],
   ["iban", /\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b/gi, 0.5, "eu"],
+  // --- secrets locale: high-confidence vendor credential fingerprints ---
+  ["aws_access_key_id", /\b(?:AKIA|ASIA|AGPA|AIDA|AROA|ANPA|ANVA|AIPA)[0-9A-Z]{16}\b/g, 0.9, "secrets"],
+  ["github_token", /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{30,255}\b/g, 0.9, "secrets"],
+  ["openai_api_key", /\bsk-(?:proj-|svcacct-|admin-)?[A-Za-z0-9_-]{20,}\b/g, 0.85, "secrets"],
+  ["anthropic_api_key", /\bsk-ant-[A-Za-z0-9_-]{20,}\b/g, 0.9, "secrets"],
+  ["slack_token", /\bxox[abprs]-[A-Za-z0-9-]{10,}\b/g, 0.85, "secrets"],
+  ["stripe_secret_key", /\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{24,}\b/g, 0.9, "secrets"],
+  ["google_api_key", /\bAIza[0-9A-Za-z_-]{35}\b/g, 0.85, "secrets"],
+  ["jwt", /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g, 0.7, "secrets"],
+  [
+    "private_key_pem",
+    /-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED |PGP )?PRIVATE KEY-----/gi,
+    0.95,
+    "secrets",
+  ],
+  ["gcp_service_account", /"type"\s*:\s*"service_account"/g, 0.85, "secrets"],
 ];
 
 export function detectPii(text: string, config: ScanConfigInput = {}): [number, Finding[]] {

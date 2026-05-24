@@ -74,16 +74,20 @@ Python exports:
 - `redact_pii(text, replacement="[REDACTED]", config=DEFAULT_CONFIG, strategy="full") -> str`
 - `redact_text(text, replacement="[REDACTED]", config=DEFAULT_CONFIG, strategy="full") -> str` (PII **and** injection spans)
 - `review_text_write(text, config=DEFAULT_CONFIG) -> ReviewDecision` and `review_text_write_async(...)`
-- `detect_prompt_injection`, `detect_prompt_injection_async`, `detect_pii` for lower-level use
+- `scan_output(text, include_evidence=True, config=DEFAULT_CONFIG) -> OutputReport` for LLM responses (system-prompt echo, chat-template token leak, refusal-then-compliance, leaked PII)
+- `scan_tool_args(args, config=DEFAULT_CONFIG) -> ToolArgsReport` for agent function-call args (SQL/NoSQL/shell injection, path traversal, SSRF, code-interpreter primitives)
+- `detect_prompt_injection`, `detect_prompt_injection_async`, `detect_pii`, `detect_output_risk`, `detect_tool_args` for lower-level use
 - `ScanConfig`, `Thresholds`, `CustomRule`, `AdapterResult` for local policy tuning
 - `ScanConfig.from_dict(...)` / `ScanConfig.from_file(path)` to load config from JSON
+- Opt-in `pii_locales=["secrets"]` to enable high-confidence vendor credential fingerprints (AWS / GitHub / OpenAI / Anthropic / Slack / Stripe / Google / JWT / PEM / GCP service account)
 
 TypeScript exports:
 
 - `scanText(text, options?)`, `scanTextAsync(text, options?)`, `scanMany(texts, options?)`
 - `redactPii(text, replacement?, config?, strategy?)` and `redactText(...)` (PII **and** injection spans)
 - `reviewTextWrite(text, config?)` and `reviewTextWriteAsync(text, config?)`
-- `detectPromptInjection`, `detectPromptInjectionAsync`, `detectPii`, `detectContradictions` for lower-level use
+- `scanOutput(text, options?)` for LLM responses; `scanToolArgs(args, config?)` for agent function-call args
+- `detectPromptInjection`, `detectPromptInjectionAsync`, `detectPii`, `detectContradictions`, `detectOutputRisk`, `detectToolArgs` for lower-level use
 - `reportToDict(report)` for the canonical snake_case wire format
 - `scanConfigFromObject(json)` to load config from a parsed JSON object
 - `ScanConfig`, `ScanConfigInput`, `Thresholds`, `CustomRule`, and adapter types for local policy tuning

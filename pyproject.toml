@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "prompt-guard"
-version = "0.3.0"
+version = "0.4.0"
 description = "Small Python/TypeScript library for detecting prompt injection, PII, and text contradictions."
 readme = "README.md"
 requires-python = ">=3.8"

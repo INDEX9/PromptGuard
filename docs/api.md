@@ -54,8 +54,48 @@ numbers, IPv4, API-key-like tokens) always run.
 ### `Thresholds`
 
 ```python
-Thresholds(prompt_injection=0.55, pii=0.5, contradiction=0.6, reviewer_block=0.75)
+Thresholds(
+    prompt_injection=0.55,
+    pii=0.5,
+    contradiction=0.6,
+    reviewer_block=0.75,
+    tool_args=0.55,
+    output_risk=0.55,
+)
 ```
+
+### `scan_tool_args` / `detect_tool_args`
+
+```python
+scan_tool_args(args, config=DEFAULT_CONFIG) -> ToolArgsReport
+detect_tool_args(args, config=DEFAULT_CONFIG) -> (float, list[Finding])
+```
+
+Walks structured tool/function call arguments (`str | dict | list`)
+recursively and scans every string value. Rule set covers SQL/NoSQL
+injection, shell metacharacters, path traversal, SSRF (private and cloud
+metadata URLs), code-interpreter primitives, Windows command injection.
+Each finding's `evidence` is prefixed with the dotted arg path
+(e.g. `"steps[0].cmd: ls; rm -rf /"`).
+
+### `scan_output` / `detect_output_risk`
+
+```python
+scan_output(text, include_evidence=True, config=DEFAULT_CONFIG) -> OutputReport
+detect_output_risk(text, config=DEFAULT_CONFIG) -> (float, list[Finding])
+```
+
+Output-side detection for LLM responses: system-prompt echo, chat-template
+token leakage (`<|im_start|>`, `[INST]`, ...), internal instruction
+disclosure, refusal-then-compliance jailbreak markers. `OutputReport`
+also carries reused PII findings via `detect_pii`.
+
+### Secrets PII locale
+
+Opt in via `pii_locales=["secrets"]` (combinable with other locales) to
+enable high-confidence vendor credential fingerprints: AWS access key id,
+GitHub PAT, OpenAI / Anthropic / Slack / Stripe / Google API keys, JWTs,
+PEM private keys, and GCP service-account JSON.
 
 ### `redact_pii` / `redact_text`
 
@@ -98,7 +138,7 @@ scanMany(texts: Iterable<string>, options?): DetectionReport[]
 
 ```ts
 interface ScanConfig {
-  thresholds: { promptInjection: number; pii: number; contradiction: number; reviewerBlock: number };
+  thresholds: { promptInjection: number; pii: number; contradiction: number; reviewerBlock: number; toolArgs: number; outputRisk: number };
   enabledRules?: string[] | Set<string>;
   disabledRules: string[] | Set<string>;
   extraRules: CustomRule[];
@@ -126,7 +166,7 @@ interface CustomRule {
   label: string;
   pattern: string;
   score: number;
-  kind?: "prompt_injection" | "pii";
+  kind?: "prompt_injection" | "pii" | "tool_args" | "output_risk";
   caseSensitive?: boolean;
   dotall?: boolean;
 }
@@ -145,6 +185,26 @@ redactText(text, replacement?, config?, strategy?): string
 reviewTextWrite(text: string, config?: ScanConfigInput): ReviewDecision
 reviewTextWriteAsync(text: string, config?: ScanConfigInput): Promise<ReviewDecision>
 ```
+
+### `scanToolArgs` / `detectToolArgs`
+
+```ts
+scanToolArgs(args: unknown, config?: ScanConfigInput): ToolArgsReport
+detectToolArgs(args: unknown, config?: ScanConfigInput): [number, Finding[]]
+```
+
+Same semantics as the Python equivalents. Accepts strings, arrays, plain
+objects, or nested combinations. Findings' `evidence` field is prefixed
+with the dotted arg path.
+
+### `scanOutput` / `detectOutputRisk`
+
+```ts
+scanOutput(text: string, options?: { includeEvidence?: boolean; config?: ScanConfigInput }): OutputReport
+detectOutputRisk(text: string, config?: ScanConfigInput): [number, Finding[]]
+```
+
+Output-side risk detection for LLM responses with reused PII findings.
 
 ### `reportToDict`
 

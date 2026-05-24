@@ -3,6 +3,8 @@ export interface Thresholds {
   pii: number;
   contradiction: number;
   reviewerBlock: number;
+  toolArgs: number;
+  outputRisk: number;
 }
 
 export interface AdapterResult {
@@ -20,7 +22,7 @@ export interface CustomRule {
   label: string;
   pattern: string;
   score: number;
-  kind?: "prompt_injection" | "pii";
+  kind?: "prompt_injection" | "pii" | "tool_args" | "output_risk";
   caseSensitive?: boolean;
   dotall?: boolean;
 }
@@ -47,6 +49,8 @@ export const DEFAULT_THRESHOLDS: Thresholds = {
   pii: 0.5,
   contradiction: 0.6,
   reviewerBlock: 0.75,
+  toolArgs: 0.55,
+  outputRisk: 0.55,
 };
 
 export const DEFAULT_CONFIG: ScanConfig = {
@@ -88,14 +92,21 @@ export function normalizeConfig(config: ScanConfigInput = {}): ScanConfig {
  * expressed in JSON and are always left unset.
  */
 export interface ScanConfigFile {
-  thresholds?: { prompt_injection?: number; pii?: number; contradiction?: number; reviewer_block?: number };
+  thresholds?: {
+    prompt_injection?: number;
+    pii?: number;
+    contradiction?: number;
+    reviewer_block?: number;
+    tool_args?: number;
+    output_risk?: number;
+  };
   enabled_rules?: string[];
   disabled_rules?: string[];
   extra_rules?: Array<{
     label: string;
     pattern: string;
     score: number;
-    kind?: "prompt_injection" | "pii";
+    kind?: "prompt_injection" | "pii" | "tool_args" | "output_risk";
     case_sensitive?: boolean;
     dotall?: boolean;
   }>;
@@ -116,6 +127,8 @@ export function scanConfigFromObject(data: ScanConfigFile): ScanConfigInput {
     if (data.thresholds.pii !== undefined) thresholds.pii = data.thresholds.pii;
     if (data.thresholds.contradiction !== undefined) thresholds.contradiction = data.thresholds.contradiction;
     if (data.thresholds.reviewer_block !== undefined) thresholds.reviewerBlock = data.thresholds.reviewer_block;
+    if (data.thresholds.tool_args !== undefined) thresholds.toolArgs = data.thresholds.tool_args;
+    if (data.thresholds.output_risk !== undefined) thresholds.outputRisk = data.thresholds.output_risk;
     input.thresholds = thresholds;
   }
   if (data.enabled_rules) input.enabledRules = data.enabled_rules;

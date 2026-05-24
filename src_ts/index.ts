@@ -2,6 +2,8 @@ import { detectContradictions, EXPERIMENTAL as CONTRADICTION_EXPERIMENTAL } from
 import { normalizeConfig, scanConfigFromObject, type ScanConfig, type ScanConfigInput } from "./config.js";
 import { detectPromptInjection, detectPromptInjectionAsync } from "./injection.js";
 import { detectPii, redactPii, redactText } from "./pii.js";
+import { detectOutputRisk, scanOutput, type OutputReport } from "./output.js";
+import { detectToolArgs, scanToolArgs, type ToolArgsReport } from "./tool_args.js";
 import { reviewTextWrite, reviewTextWriteAsync } from "./reviewer.js";
 import { reportToDict } from "./report.js";
 import {
@@ -25,20 +27,26 @@ export type {
 } from "./config.js";
 export type { RedactionStrategy } from "./pii.js";
 export type { ReviewDecision } from "./reviewer.js";
+export type { OutputReport } from "./output.js";
+export type { ToolArgsReport } from "./tool_args.js";
 export {
   OWASP_LLM_CATEGORIES,
   categoryForLabel,
   severityForScore,
   detectContradictions,
+  detectOutputRisk,
   detectPromptInjection,
   detectPromptInjectionAsync,
   detectPii,
+  detectToolArgs,
   redactPii,
   redactText,
   reportToDict,
   reviewTextWrite,
   reviewTextWriteAsync,
   scanConfigFromObject,
+  scanOutput,
+  scanToolArgs,
 };
 export const EXPERIMENTAL_DETECTORS = new Set(CONTRADICTION_EXPERIMENTAL ? ["contradiction"] : []);
 

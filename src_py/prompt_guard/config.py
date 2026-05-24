@@ -12,6 +12,8 @@ class Thresholds:
     pii: float = 0.5
     contradiction: float = 0.6
     reviewer_block: float = 0.75
+    tool_args: float = 0.55
+    output_risk: float = 0.55
 
 
 @dataclass(frozen=True)
@@ -101,6 +103,8 @@ class ScanConfig:
             pii=float(thresholds_data.get("pii", 0.5)),
             contradiction=float(thresholds_data.get("contradiction", 0.6)),
             reviewer_block=float(thresholds_data.get("reviewer_block", 0.75)),
+            tool_args=float(thresholds_data.get("tool_args", 0.55)),
+            output_risk=float(thresholds_data.get("output_risk", 0.55)),
         )
         extra_rules = tuple(
             CustomRule(

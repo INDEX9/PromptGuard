@@ -35,12 +35,40 @@ OWASP_LLM_CATEGORIES: Dict[str, str] = {
     "phone_cn": "LLM02",
     "national_id_cn": "LLM02",
     "iban": "LLM02",
+    # Secrets pack (vendor credential fingerprints).
+    "aws_access_key_id": "LLM02",
+    "github_token": "LLM02",
+    "openai_api_key": "LLM02",
+    "anthropic_api_key": "LLM02",
+    "slack_token": "LLM02",
+    "stripe_secret_key": "LLM02",
+    "google_api_key": "LLM02",
+    "jwt": "LLM02",
+    "private_key_pem": "LLM02",
+    "gcp_service_account": "LLM02",
+    # Tool args injection (LLM06: Excessive Agency / Insecure Plugin Design).
+    "sql_injection": "LLM06",
+    "nosql_operator_injection": "LLM06",
+    "shell_metacharacter": "LLM06",
+    "path_traversal": "LLM06",
+    "ssrf_metadata_url": "LLM06",
+    "ssrf_private_url": "LLM06",
+    "code_interpreter_primitive": "LLM06",
+    "windows_command_injection": "LLM06",
+    # Output-side risks (LLM07: System Prompt Leakage, LLM02: PII).
+    "system_prompt_echo": "LLM07",
+    "chat_template_token_leak": "LLM07",
+    "internal_instruction_leak": "LLM07",
+    "refusal_then_compliance": "LLM01",
+    "sensitive_topic_response": "LLM01",
 }
 
 # Fallback category by detector kind for custom / unmapped labels.
 _KIND_CATEGORIES: Dict[str, str] = {
     "prompt_injection": "LLM01",
     "pii": "LLM02",
+    "tool_args": "LLM06",
+    "output_risk": "LLM07",
 }
 
 

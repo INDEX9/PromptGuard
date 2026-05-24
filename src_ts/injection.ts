@@ -300,18 +300,38 @@ const INVISIBLE_CHARS = new Set([
   "\u2066", "\u2067", "\u2068", "\u2069",
   "\ufeff",
 ]);
+// Unicode "Tags" block (U+E0000\u2013U+E007F). Some LLMs silently follow
+// instructions encoded in this block; we strip it during canonicalization.
+const TAG_BLOCK_START = 0xe0000;
+const TAG_BLOCK_END = 0xe007f;
 const HTML_COMMENT_RE = /<!--[\s\S]*?-->/g;
 const WHITESPACE_RUN_RE = /[\t\r ]+/g;
 
+function isInvisibleCodePoint(code: number, ch: string): boolean {
+  if (INVISIBLE_CHARS.has(ch)) return true;
+  return code >= TAG_BLOCK_START && code <= TAG_BLOCK_END;
+}
+
 export function canonicalizeText(text: string): { canonical: string; rawOffsets: number[] } {
-  // Step 1: drop invisible / BiDi / zero-width characters, tracking offsets.
+  // Step 1: drop invisible / BiDi / zero-width / Unicode-tag characters,
+  // tracking offsets. Iterate by code point so surrogate-pair characters
+  // such as Unicode tags are evaluated as a whole.
   const stage1Chars: string[] = [];
   const stage1Offsets: number[] = [];
-  for (let i = 0; i < text.length; i += 1) {
-    const ch = text[i];
-    if (INVISIBLE_CHARS.has(ch)) continue;
-    stage1Chars.push(ch);
-    stage1Offsets.push(i);
+  let i = 0;
+  while (i < text.length) {
+    const code = text.codePointAt(i) as number;
+    const unitLen = code > 0xffff ? 2 : 1;
+    const ch = String.fromCodePoint(code);
+    if (isInvisibleCodePoint(code, ch)) {
+      i += unitLen;
+      continue;
+    }
+    for (let k = 0; k < unitLen; k += 1) {
+      stage1Chars.push(text[i + k]);
+      stage1Offsets.push(i + k);
+    }
+    i += unitLen;
   }
   stage1Offsets.push(text.length);
   const stage1 = stage1Chars.join("");

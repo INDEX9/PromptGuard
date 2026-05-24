@@ -367,6 +367,18 @@ _INVISIBLE_CHARS = frozenset(
     "\u202a\u202b\u202c\u202d\u202e\u2060\u2061\u2062\u2063\u2064"
     "\u2066\u2067\u2068\u2069\ufeff"
 )
+# Unicode "Tags" block (U+E0000\u2013U+E007F). Models such as GPT-class systems
+# have been shown to silently follow instructions hidden in this block. We
+# treat the entire range as invisible during canonicalization.
+_TAG_BLOCK_START = 0xE0000
+_TAG_BLOCK_END = 0xE007F
+
+
+def _is_invisible(char: str) -> bool:
+    if char in _INVISIBLE_CHARS:
+        return True
+    code = ord(char)
+    return _TAG_BLOCK_START <= code <= _TAG_BLOCK_END
 _HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
 _WHITESPACE_RUN_RE = re.compile(r"[\t\r ]+")
 
@@ -376,7 +388,7 @@ def _canonicalize_text(text: str) -> Tuple[str, List[int]]:
     chars: List[str] = []
     offsets: List[int] = []
     for index, char in enumerate(text):
-        if char in _INVISIBLE_CHARS:
+        if _is_invisible(char):
             continue
         chars.append(char)
         offsets.append(index)
